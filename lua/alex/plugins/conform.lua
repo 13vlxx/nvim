@@ -1,0 +1,59 @@
+return {
+	"stevearc/conform.nvim",
+	event = { "BufReadPre", "BufNewFile" },
+	config = function()
+		local conform = require("conform")
+
+		conform.setup({
+			formatters_by_ft = {
+				lua = { "stylua" },
+				python = { "ruff_organize_imports", "ruff_format" },
+				rust = {
+					"rustfmt",
+					args = { "--config", "max_width=100", "--config", "wrap_comments=true" },
+					lsp_format = "fallback",
+				},
+				javascript = { "prettier", "biome", stop_after_first = true },
+				typescript = { "prettier", "biome", stop_after_first = true },
+				html = { "prettier", "biome", stop_after_first = true },
+				css = { "prettier", "biome", stop_after_first = true },
+				scss = { "prettier", "biome", stop_after_first = true },
+				less = { "prettier", "biome", stop_after_first = true },
+				yaml = { "prettier" },
+				markdown = { "prettier" },
+				prisma = { "prettier" },
+				go = { "goimports", "gofumpt", stop_after_first = true },
+			},
+			formatters = {
+				prettier = {
+					prepend_args = { "--print-width", "120" },
+					condition = function(self, ctx)
+						return vim.fs.find({
+							".prettierrc",
+							".prettierrc.json",
+							".prettierrc.js",
+							"prettier.config.js",
+						}, { path = ctx.filename, upward = true })[1] ~= nil
+					end,
+				},
+				biome = {
+					condition = function(self, ctx)
+						return vim.fs.find({
+							"biome.json",
+						}, { path = ctx.filename, upward = true })[1] ~= nil
+					end,
+				},
+			},
+		})
+
+		vim.api.nvim_create_autocmd("BufWritePre", {
+			callback = function(args)
+				conform.format({
+					bufnr = args.buf,
+					lsp_fallback = true,
+					timeout_ms = 500,
+				})
+			end,
+		})
+	end,
+}
