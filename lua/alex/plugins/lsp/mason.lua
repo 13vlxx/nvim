@@ -31,7 +31,6 @@ return {
 				"html",
 				"cssls",
 				"tailwindcss",
-				"gopls",
 				"prismals",
 				"emmet_ls",
 				"emmet_language_server",
