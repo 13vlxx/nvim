@@ -26,13 +26,9 @@ return {
 				["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
 				["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
 				["<C-Space>"] = cmp.mapping.complete(),
-				["<CR>"] = cmp.mapping.confirm({ select = auto_select }),
+				["<CR>"] = cmp.mapping.confirm({ select = true }), -- Entrée pour accepter le menu cmp
 				["<Tab>"] = cmp.mapping(function(fallback)
-					if cmp.visible() then
-						cmp.confirm({ select = auto_select })
-					else
-						fallback()
-					end
+					fallback() -- Tab toujours pour Copilot
 				end, { "i", "s" }),
 				["<C-y>"] = cmp.mapping.confirm({ select = true }),
 				["<S-CR>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
@@ -42,12 +38,12 @@ return {
 				end,
 			}),
 			sources = cmp.config.sources({
-				{ name = "copilot", group_index = 2 },
-				{ name = "nvim_lsp", group_index = 2 },
-				{ name = "path", group_index = 2 },
+				{ name = "nvim_lsp" }, -- LSP (Tailwind, TypeScript, etc.)
+				{ name = "path" },
 			}, {
-				{ name = "buffer", group_index = 2 },
+				{ name = "buffer" },
 			}),
+			-- Copilot retiré des sources, il utilisera seulement le ghost text
 			formatting = {
 				format = function(entry, item)
 					local icons = {
@@ -96,7 +92,21 @@ return {
 					hl_group = "CmpGhostText",
 				},
 			},
-			sorting = defaults.sorting,
+			sorting = {
+				priority_weight = 2,
+				comparators = {
+					-- Priorité basée sur le group_index et priority
+					require("cmp.config.compare").offset,
+					require("cmp.config.compare").exact,
+					require("cmp.config.compare").score,
+					require("cmp.config.compare").recently_used,
+					require("cmp.config.compare").locality,
+					require("cmp.config.compare").kind,
+					require("cmp.config.compare").sort_text,
+					require("cmp.config.compare").length,
+					require("cmp.config.compare").order,
+				},
+			},
 		}
 	end,
 }

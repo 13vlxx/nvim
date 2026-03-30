@@ -21,8 +21,17 @@ return {
 					},
 				},
 				suggestion = {
-					enabled = false, -- Désactivé car on utilise copilot-cmp
-					auto_trigger = false,
+					enabled = true, -- Réactivé pour avoir le ghost text
+					auto_trigger = true,
+					debounce = 75,
+					keymap = {
+						accept = "<Tab>",
+						accept_word = false,
+						accept_line = false,
+						next = "<M-]>",
+						prev = "<M-[>",
+						dismiss = "<C-]>",
+					},
 				},
 				filetypes = {
 					yaml = false,
