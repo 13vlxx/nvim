@@ -8,52 +8,52 @@ return {
 			formatters_by_ft = {
 				lua = { "stylua" },
 				python = { "ruff_organize_imports", "ruff_format" },
-				rust = {
-					"rustfmt",
-					args = { "--config", "max_width=100", "--config", "wrap_comments=true" },
-					lsp_format = "fallback",
-				},
-				javascript = { "prettier", "biome", stop_after_first = true },
-				typescript = { "prettier", "biome", stop_after_first = true },
-				html = { "prettier", "biome", stop_after_first = true },
-				css = { "prettier", "biome", stop_after_first = true },
-				scss = { "prettier", "biome", stop_after_first = true },
-				less = { "prettier", "biome", stop_after_first = true },
+				rust = { "rustfmt" },
+				go = { "goimports", "gofumpt" },
+				javascript = { "biome", "prettier", stop_after_first = true },
+				typescript = { "biome", "prettier", stop_after_first = true },
+				javascriptreact = { "biome", "prettier", stop_after_first = true },
+				typescriptreact = { "biome", "prettier", stop_after_first = true },
+				html = { "prettier" },
+				css = { "prettier" },
+				scss = { "prettier" },
+				json = { "biome", "prettier", stop_after_first = true },
+				jsonc = { "biome", "prettier", stop_after_first = true },
 				yaml = { "prettier" },
 				markdown = { "prettier" },
 				prisma = { "prettier" },
-				go = { "goimports", "gofumpt", stop_after_first = true },
 			},
 			formatters = {
+				-- Prettier : utilise UNIQUEMENT la config du projet, sans override
 				prettier = {
-					prepend_args = { "--print-width", "120" },
-					condition = function(self, ctx)
-						return vim.fs.find({
-							".prettierrc",
-							".prettierrc.json",
-							".prettierrc.js",
-							"prettier.config.js",
-						}, { path = ctx.filename, upward = true })[1] ~= nil
-					end,
+					-- Ne pas ajouter d'args, laisse la config du projet décider
+					require_cwd = true, -- Utilise le working directory du projet
 				},
+				-- Biome : utilise UNIQUEMENT la config du projet
 				biome = {
-					condition = function(self, ctx)
-						return vim.fs.find({
-							"biome.json",
-						}, { path = ctx.filename, upward = true })[1] ~= nil
-					end,
+					require_cwd = true,
 				},
 			},
 		})
 
+		-- Format à la sauvegarde
 		vim.api.nvim_create_autocmd("BufWritePre", {
 			callback = function(args)
 				conform.format({
 					bufnr = args.buf,
 					lsp_fallback = true,
-					timeout_ms = 500,
+					timeout_ms = 1000,
 				})
 			end,
 		})
+
+		-- Raccourci manuel pour formater
+		vim.keymap.set({ "n", "v" }, "<leader>cf", function()
+			conform.format({
+				lsp_fallback = true,
+				async = false,
+				timeout_ms = 1000,
+			})
+		end, { desc = "Format file or range" })
 	end,
 }
