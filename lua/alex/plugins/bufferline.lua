@@ -6,6 +6,8 @@ return {
 		options = {
 			mode = "tabs",
 			separator_style = "thin",
+			modified_icon = "●",
+			show_close_icon = false,
 		},
 		highlights = {
 			fill = {
