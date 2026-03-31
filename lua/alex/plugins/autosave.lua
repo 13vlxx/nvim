@@ -19,7 +19,7 @@ return {
 			return false
 		end,
 		write_all_buffers = false, -- Sauvegarde seulement le buffer actuel
-		debounce_delay = 1000, -- Attend 1 seconde après la dernière modification avant de sauvegarder
+		debounce_delay = 500, -- Attend 0.5 seconde après la dernière modification avant de sauvegarder
 		callbacks = {
 			enabling = function()
 				print("AutoSave activé")

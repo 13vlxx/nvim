@@ -21,6 +21,13 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 		vim.api.nvim_set_hl(0, "CmpItemAbbrMatch", { fg = "#82aaff", bold = true })
 		vim.api.nvim_set_hl(0, "CmpItemAbbrMatchFuzzy", { fg = "#82aaff" })
 		vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#7ee787" })
+		
+		-- Sélection visuelle (mode v, V, Ctrl+v)
+		vim.api.nvim_set_hl(0, "Visual", { bg = "#2d4f67", fg = "NONE" })
+		
+		-- Nvim-tree (navigateur de fichiers)
+		vim.api.nvim_set_hl(0, "NvimTreeCursorLine", { bg = "#2d4f67" })
+		vim.api.nvim_set_hl(0, "NvimTreeOpenedFile", { fg = "#82aaff", bold = true })
 	end,
 })
 
