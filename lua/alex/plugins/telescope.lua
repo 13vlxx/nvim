@@ -38,6 +38,9 @@ return {
 				},
 			},
 			pickers = {
+				find_files = {
+					hidden = true,
+				},
 				diagnostics = {
 					line_width = "full",
 					trim_text = false,
