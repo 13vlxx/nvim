@@ -6,7 +6,7 @@ return {
 		trigger_events = {
 			immediate_save = { "BufLeave", "FocusLost" }, -- Sauvegarde quand tu quittes le buffer ou la fenêtre
 			defer_save = { "InsertLeave", "TextChanged" }, -- Sauvegarde après modification
-			cancel_defered_save = { "InsertEnter" },
+			cancel_deferred_save = { "InsertEnter" },
 		},
 		condition = function(buf)
 			local fn = vim.fn
