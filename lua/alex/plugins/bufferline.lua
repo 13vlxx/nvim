@@ -5,45 +5,6 @@ return {
 	opts = {
 		options = {
 			mode = "tabs",
-			separator_style = "thin",
-			modified_icon = "●",
-			show_close_icon = false,
-		},
-		highlights = {
-			fill = {
-				bg = "none",
-			},
-			background = {
-				bg = "none",
-			},
-			buffer_selected = {
-				bg = "none",
-				bold = true,
-				italic = false,
-			},
-			separator = {
-				fg = "none",
-				bg = "none",
-			},
-			separator_selected = {
-				fg = "none",
-				bg = "none",
-			},
-			modified_selected = {
-				bg = "none",
-			},
-			duplicate_selected = {
-				bg = "none",
-			},
-			indicator_selected = {
-				bg = "none",
-			},
-			close_button = {
-				bg = "none",
-			},
-			close_button_selected = {
-				bg = "none",
-			},
 		},
 	},
 }

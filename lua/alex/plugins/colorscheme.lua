@@ -1,105 +1,45 @@
 return {
-	{
-		"ellisonleao/gruvbox.nvim",
-		config = function()
-			require("gruvbox").setup({
-				terminal_colors = true,
-				undercurl = true,
-				underline = true,
-				bold = true,
-				italic = {
-					strings = false,
-					emphasis = false,
-					comments = false,
-					folds = false,
-					operators = false,
-				},
-				strikethrough = true,
-				invert_selection = false,
-				invert_signs = false,
-				invert_tabline = false,
-				invert_intend_guides = false,
-				inverse = true,
-				contrast = "",
-				palette_overrides = {},
-				overrides = {
-					Pmenu = { bg = "" },
-				},
-				dim_inactive = false,
-				transparent_mode = true,
-			})
-		end,
-	},
-	{
-		"cocopon/iceberg.vim",
-		lazy = false,
-		priority = 1000,
-		config = function()
-			vim.api.nvim_create_autocmd("ColorScheme", {
-				pattern = "iceberg",
-				callback = function()
-					vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-					vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
-				end,
-			})
-		end,
-	},
-	{
-		"shaunsingh/nord.nvim",
-		lazy = false,
-		priority = 1000,
-		config = function()
-			vim.g.nord_contrast = true
-			vim.g.nord_borders = true
-			vim.g.nord_italic = false
+  "folke/tokyonight.nvim",
+  priority = 1000,
+  config = function()
+    local transparent = true -- set to true if you would like to enable transparency
 
-			local groups = {
-				Normal = { fg = "#edecee", bg = "none" },
-				NormalNC = { fg = "#edecee", bg = "none" },
-				CursorLine = { bg = "#1c1b22" },
-				Visual = { bg = "#434C5E" },
+    local bg = "#011628"
+    local bg_dark = "#011423"
+    local bg_highlight = "#143652"
+    local bg_search = "#0A64AC"
+    local bg_visual = "#275378"
+    local fg = "#CBE0F0"
+    local fg_dark = "#B4D0E9"
+    local fg_gutter = "#627E97"
+    local border = "#547998"
 
-				FloatBorder = { fg = "#edecee" },
-				WinSeparator = { fg = "#21202e" },
+    require("tokyonight").setup({
+      style = "night",
+      transparent = transparent,
+      styles = {
+        sidebars = transparent and "transparent" or "dark",
+        floats = transparent and "transparent" or "dark",
+      },
+      on_colors = function(colors)
+        colors.bg = bg
+        colors.bg_dark = transparent and colors.none or bg_dark
+        colors.bg_float = transparent and colors.none or bg_dark
+        colors.bg_highlight = bg_highlight
+        colors.bg_popup = bg_dark
+        colors.bg_search = bg_search
+        colors.bg_sidebar = transparent and colors.none or bg_dark
+        colors.bg_statusline = transparent and colors.none or bg_dark
+        colors.bg_visual = bg_visual
+        colors.border = border
+        colors.fg = fg
+        colors.fg_dark = fg_dark
+        colors.fg_float = fg
+        colors.fg_gutter = fg_gutter
+        colors.fg_sidebar = fg_dark
+      end,
+    })
 
-				URL = { fg = "#61ffca", underline = true },
-
-				SignColumn = { bg = "none" },
-				Folded = { bg = "none" },
-			}
-
-			for group, opts in pairs(groups) do
-				vim.api.nvim_set_hl(0, group, opts)
-			end
-		end,
-	},
-	{
-		"rose-pine/neovim",
-		name = "rose-pine",
-		config = function()
-			require("rose-pine").setup({
-				variant = "auto",
-				dark_variant = "main",
-				dim_inactive_windows = false,
-				extend_background_behind_borders = true,
-
-				styles = {
-					bold = true,
-					italic = false,
-					transparency = true,
-				},
-
-				highlight_groups = {
-					Normal = { bg = "none" },
-					NormalNC = { bg = "none" },
-					NormalFloat = { bg = "none" },
-					FloatBorder = { bg = "none" },
-					SignColumn = { bg = "none" },
-					StatusLine = { bg = "none" },
-					TelescopeBorder = { bg = "none" },
-					TelescopeNormal = { bg = "none" },
-				},
-			})
-		end,
-	},
+    vim.cmd("colorscheme tokyonight")
+  end,
 }

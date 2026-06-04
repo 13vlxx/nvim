@@ -1,47 +1,34 @@
-vim.cmd("let g:netrw_banner = 0")
+vim.cmd("let g:netrw_liststyle = 3")
 
-vim.opt.guicursor = ""
-vim.opt.nu = true
-vim.opt.relativenumber = true
+local opt = vim.opt
 
--- trying to add
-vim.opt.number = true
-vim.opt.cursorline = true
+opt.relativenumber = true
+opt.number = true
 
-vim.opt.tabstop = 2
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 2
-vim.opt.expandtab = true
-vim.opt.autoindent = true
-vim.opt.smartindent = true
-vim.opt.wrap = false
+-- tabs & indentation
+opt.tabstop = 2 -- 2 spaces for tabs (prettier default)
+opt.shiftwidth = 2 -- 2 spaces for indent width
+opt.expandtab = treu -- expand tab to spaces
+opt.autoindent = true -- copy indent from current line when starting new one
 
-vim.opt.swapfile = false
-vim.opt.backup = false
-vim.opt.undofile = true
+opt.wrap = false
 
-vim.opt.incsearch = true
-vim.opt.inccommand = "split"
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
+-- search settings
+opt.ignorecase = true -- ignore case when searching
+opt.smartcase = true -- if you include mixed case in your search, assumes you want case-sensitive
 
-vim.opt.background = "dark"
-vim.opt.scrolloff = 8
-vim.opt.signcolumn = "yes"
+opt.cursorline = true
 
-vim.opt.backspace = { "start", "eol", "indent" }
+opt.termguicolors = true
+opt.background = "dark" -- colorschemes that can be light or dark
+opt.signcolumn = "yes" -- show sign column so that text doesn't shift
 
-vim.opt.splitright = true
-vim.opt.splitbelow = true
+-- backspace
+opt.backspace = "indent,eol,start" -- allow backspace on indent, end of line or insert mode start position
 
-vim.opt.isfname:append("@-@")
-vim.opt.updatetime = 50
-vim.opt.colorcolumn = ""
+-- clipboard
+opt.clipboard:append("unnamedplus") -- use system clipboard as default register
 
-vim.opt.clipboard:append("unnamedplus")
-vim.opt.hlsearch = true
-
-vim.opt.mouse = "a"
-vim.g.editorconfig = true
-
-vim.opt.termguicolors = true
+-- split windows
+opt.splitright = true -- split vertical window on the right
+opt.splitbelow = true -- split horizontal window on the bottom
