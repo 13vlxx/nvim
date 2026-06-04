@@ -1,52 +1,60 @@
 return {
-  {
-    "williamboman/mason-lspconfig.nvim",
-    opts = {
-      -- list of servers for mason to install
-      ensure_installed = {
-        "ts_ls",
-        "html",
-        "cssls",
-        "tailwindcss",
-        "svelte",
-        "lua_ls",
-        "graphql",
-        "emmet_ls",
-        "prismals",
-        "pyright",
-        "eslint",
-      },
-    },
-    dependencies = {
-      {
-        "williamboman/mason.nvim",
-        opts = {
-          ui = {
-            icons = {
-              package_installed = "✓",
-              package_pending = "➜",
-              package_uninstalled = "✗",
-            },
-          },
-        },
-      },
-      "neovim/nvim-lspconfig",
-    },
-  },
-  {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-    opts = {
-      ensure_installed = {
-        "prettier", -- prettier formatter
-        "stylua", -- lua formatter
-        "isort", -- python formatter
-        "black", -- python formatter
-        "pylint",
-        "eslint_d",
-      },
-    },
-    dependencies = {
-      "williamboman/mason.nvim",
-    },
-  },
+	"williamboman/mason.nvim",
+	lazy = false,
+	dependencies = {
+		"williamboman/mason-lspconfig.nvim",
+		"WhoIsSethDaniel/mason-tool-installer.nvim",
+		"hrsh7th/cmp-nvim-lsp",
+		"neovim/nvim-lspconfig",
+	},
+	config = function()
+		local mason = require("mason")
+		local mason_lspconfig = require("mason-lspconfig")
+		local mason_tool_installer = require("mason-tool-installer")
+
+		mason.setup({
+			ui = {
+				icons = {
+					package_installed = "✓",
+					package_pending = "➜",
+					package_uninstalled = "✗",
+				},
+			},
+		})
+
+		-- Lsp
+		mason_lspconfig.setup({
+			automatic_enable = false,
+			ensure_installed = {
+				"lua_ls",
+				"ts_ls",
+				"html",
+				"cssls",
+				"tailwindcss",
+				"prismals",
+				"emmet_ls",
+				"emmet_language_server",
+				"eslint",
+				"marksman",
+				"angularls",
+				"jsonls",
+				"pyright",
+				"biome",
+				"rust_analyzer",
+			},
+		})
+
+		-- Formatters/Linters
+		mason_tool_installer.setup({
+			ensure_installed = {
+				"prettier",
+				"stylua",
+				"isort",
+				"pylint",
+				"clangd",
+				"biome",
+				"rustfmt",
+			},
+		})
+	end,
 }

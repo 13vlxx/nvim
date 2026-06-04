@@ -18,8 +18,9 @@ return {
 			defaults = {
 				path_display = { "smart" },
 				layout_config = {
-					preview_width = 0.6,
 					width = 0.95,
+					horizontal = { preview_width = 0.6 },
+					vertical = { preview_width = 0.6 },
 				},
 				wrap_results = true,
 				mappings = {

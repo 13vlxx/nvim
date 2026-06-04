@@ -9,10 +9,13 @@ return {
 	config = function()
 		local cmp_nvim_lsp = require("cmp_nvim_lsp")
 		local keymap = vim.keymap
+		local builtin = require("telescope.builtin")
+
+		keymap.set("n", "<leader>d", vim.diagnostic.open_float, { noremap = true, silent = true })
+		keymap.set("n", "<leader>D", builtin.diagnostics, { noremap = true, silent = true })
 
 		local on_attach = function(client, bufnr)
 			local opts = { noremap = true, silent = true, buffer = bufnr }
-			local builtin = require("telescope.builtin")
 
 			client.server_capabilities.documentFormattingProvider = false
 			client.server_capabilities.documentRangeFormattingProvider = false
@@ -34,8 +37,6 @@ return {
 			keymap.set("n", "K", vim.lsp.buf.hover, opts)
 			keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
 			keymap.set({ "n", "v" }, "<leader>vca", vim.lsp.buf.code_action, opts)
-			keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts)
-			keymap.set("n", "<leader>D", builtin.diagnostics, opts)
 			keymap.set("n", "<leader>rs", "<cmd>LspRestart<CR>", opts)
 		end
 
