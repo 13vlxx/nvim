@@ -21,6 +21,10 @@ return {
         sidebars = transparent and "transparent" or "dark",
         floats = transparent and "transparent" or "dark",
       },
+      on_highlights = function(hl, colors)
+        hl.Folded = { bg = "#0d2137", fg = "#547998", italic = true }
+        hl.UfoFoldedEllipsis = { fg = "#547998" }
+      end,
       on_colors = function(colors)
         colors.bg = bg
         colors.bg_dark = transparent and colors.none or bg_dark
