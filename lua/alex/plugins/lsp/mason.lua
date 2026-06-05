@@ -41,6 +41,9 @@ return {
 				"pyright",
 				"biome",
 				"rust_analyzer",
+				"dockerls",
+				"docker_compose_language_service",
+				"yamlls",
 			},
 		})
 

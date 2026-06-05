@@ -244,6 +244,53 @@ return {
 			},
 		})
 
+		vim.lsp.config("dockerls", {
+			filetypes = { "dockerfile" },
+			capabilities = capabilities,
+			on_attach = on_attach,
+		})
+
+		vim.lsp.config("docker_compose_language_service", {
+			filetypes = { "yaml.docker-compose" },
+			root_dir = vim.fs.root(0, { "docker-compose.yml", "docker-compose.yaml", "compose.yml", "compose.yaml" }),
+			capabilities = capabilities,
+			on_attach = on_attach,
+		})
+
+		vim.lsp.config("yamlls", {
+			filetypes = { "yaml", "yml" },
+			capabilities = capabilities,
+			on_attach = on_attach,
+			settings = {
+				yaml = {
+					validate = true,
+					hover = true,
+					completion = true,
+					schemaStore = { enable = false, url = "" },
+					schemas = {
+						kubernetes = {
+							"*-deployment.yaml",
+							"*-service.yaml",
+							"*-ingress.yaml",
+							"*-configmap.yaml",
+							"*-secret.yaml",
+							"*-pod.yaml",
+							"*-daemonset.yaml",
+							"*-statefulset.yaml",
+							"*-cronjob.yaml",
+							"*-job.yaml",
+							"k8s/**/*.yaml",
+							"k8s/**/*.yml",
+							"kubernetes/**/*.yaml",
+							"kubernetes/**/*.yml",
+							"manifests/**/*.yaml",
+							"manifests/**/*.yml",
+						},
+					},
+				},
+			},
+		})
+
 		vim.lsp.enable({
 			"clangd",
 			"lua_ls",
@@ -256,6 +303,9 @@ return {
 			"jsonls",
 			"pyright",
 			"rust_analyzer",
+			"dockerls",
+			"docker_compose_language_service",
+			"yamlls",
 		})
 	end,
 }
