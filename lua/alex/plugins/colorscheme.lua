@@ -24,6 +24,9 @@ return {
       on_highlights = function(hl, colors)
         hl.Folded = { bg = "#0d2137", fg = "#547998", italic = true }
         hl.UfoFoldedEllipsis = { fg = "#547998" }
+        hl.CmpNormal = { bg = "#0a1e2e" }
+        hl.CmpBorder = { fg = "#547998", bg = "#0a1e2e" }
+        hl.CmpSel = { bg = "#143652", bold = true }
       end,
       on_colors = function(colors)
         colors.bg = bg
