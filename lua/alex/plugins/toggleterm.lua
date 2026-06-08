@@ -54,9 +54,11 @@ return {
 				horizontal_breakpoint = 135,
 			},
 		})
-
 		local function set_terminal_keymaps()
 			local opts = { buffer = 0 }
+			if vim.bo.filetype == "lazygit" or vim.api.nvim_buf_get_name(0):match("lazygit") then
+				return
+			end
 			vim.keymap.set("t", "<esc><esc>", [[<C-\><C-n>]], opts)
 			vim.keymap.set("t", "<C-h>", [[<Cmd>wincmd h<CR>]], opts)
 			vim.keymap.set("t", "<C-j>", [[<Cmd>wincmd j<CR>]], opts)
