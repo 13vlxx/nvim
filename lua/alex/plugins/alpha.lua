@@ -14,7 +14,7 @@ return {
 		end
 
 		-- Set header
-		dashboard.section.header.val = ascii.get_random("text", "neovim")
+		dashboard.section.header.val = ascii.art.text.neovim.sharp
 
 		-- Set menu
 		dashboard.section.buttons.val = {

@@ -9,6 +9,10 @@ keymap.set("i", "jk", "<ESC>", { desc = "Exit insert mode with jk" })
 keymap.set("n", "<leader>nh", ":nohl<CR>", { desc = "Clear search highlights" })
 keymap.set("n", "<Esc>", ":nohlsearch<CR>", { desc = "Clear search", silent = true })
 
+-- duplicate line / selection below
+vim.keymap.set("n", "<leader>y", ":co.<CR>", { desc = "Duplicate line below", silent = true })
+vim.keymap.set("v", "<leader>y", ":co '><CR>gv", { desc = "Duplicate selection below", silent = true })
+
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "moves lines down in visual selection", silent = true })
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "moves lines up in visual selection", silent = true })
 
