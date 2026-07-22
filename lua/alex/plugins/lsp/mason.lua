@@ -44,6 +44,7 @@ return {
 				"dockerls",
 				"docker_compose_language_service",
 				"yamlls",
+				"jdtls", -- installed here, but started by nvim-jdtls (not vim.lsp.enable)
 			},
 		})
 
@@ -57,6 +58,10 @@ return {
 				"clangd",
 				"biome",
 				"rustfmt",
+				-- java: formatter + jdtls debug/test bundles
+				"google-java-format",
+				"java-debug-adapter",
+				"java-test",
 			},
 		})
 	end,

@@ -10,6 +10,7 @@ return {
 				python = { "ruff_organize_imports", "ruff_format" },
 				rust = { "rustfmt" },
 				go = { "goimports", "gofumpt" },
+				java = { "google-java-format" },
 				javascript = { "biome", "prettier", "prettier_global", stop_after_first = true },
 				typescript = { "biome", "prettier", "prettier_global", stop_after_first = true },
 				javascriptreact = { "biome", "prettier", "prettier_global", stop_after_first = true },
