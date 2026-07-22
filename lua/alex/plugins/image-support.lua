@@ -6,6 +6,13 @@ return {
 	},
 
 	opts = {
+		-- Pasting from nvim-tree only saves the image to the folder under the
+		-- cursor; the tree buffer isn't modifiable, so skip markup insertion there
+		-- (empty template makes img-clip a no-op on insertion). Avoids E21.
+		filetypes = {
+			NvimTree = { template = "" },
+		},
+
 		default = {
 			insert_mode_after_paste = true,
 			url_encode_path = true,
