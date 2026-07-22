@@ -5,6 +5,7 @@ return {
 		{ "hrsh7th/cmp-nvim-lsp", lazy = false },
 		{ "antosha417/nvim-lsp-file-operations", config = true },
 		{ "folke/neodev.nvim", opts = {} },
+		"b0o/schemastore.nvim",
 	},
 	config = function()
 		local cmp_nvim_lsp = require("cmp_nvim_lsp")
@@ -132,6 +133,23 @@ return {
 			},
 		})
 
+		-- lspconfig's default on_attach registers the LspEslintFixAll command; keep it
+		local eslint_base_on_attach = vim.lsp.config.eslint.on_attach
+		vim.lsp.config("eslint", {
+			capabilities = capabilities,
+			on_attach = function(client, bufnr)
+				if eslint_base_on_attach then
+					eslint_base_on_attach(client, bufnr)
+				end
+				on_attach(client, bufnr)
+				-- Auto-fix eslint rules on save (formatting stays with conform)
+				vim.api.nvim_create_autocmd("BufWritePre", {
+					buffer = bufnr,
+					command = "LspEslintFixAll",
+				})
+			end,
+		})
+
 		vim.lsp.config("angularls", {
 			root_markers = { "angular.json" },
 			capabilities = capabilities,
@@ -214,6 +232,12 @@ return {
 			filetypes = { "json", "jsonc" },
 			capabilities = capabilities,
 			on_attach = on_attach,
+			settings = {
+				json = {
+					schemas = require("schemastore").json.schemas(),
+					validate = { enable = true },
+				},
+			},
 		})
 
 		vim.lsp.config("pyright", {
@@ -296,6 +320,7 @@ return {
 			"lua_ls",
 			"gopls",
 			"ts_ls",
+			"eslint",
 			"angularls",
 			"html",
 			"cssls",
@@ -309,4 +334,3 @@ return {
 		})
 	end,
 }
-

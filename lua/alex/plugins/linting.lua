@@ -45,25 +45,21 @@ return {
 			return false
 		end
 
+		-- eslint is handled by the eslint LSP; nvim-lint only covers biome for JS/TS
 		local function get_js_linters()
-			if has_biome_config() then
-				return { "biomejs" }
-			end
-
-			if vim.fn.executable("eslint_d") == 1 then
-				return { "eslint_d" }
-			end
-
-			return {}
+			return has_biome_config() and { "biomejs" } or {}
 		end
 
+		local js_filetypes = {
+			javascript = true,
+			typescript = true,
+			javascriptreact = true,
+			typescriptreact = true,
+			json = true,
+			jsonc = true,
+		}
+
 		lint.linters_by_ft = {
-			javascript = get_js_linters(),
-			typescript = get_js_linters(),
-			javascriptreact = get_js_linters(),
-			typescriptreact = get_js_linters(),
-			json = get_js_linters(),
-			jsonc = get_js_linters(),
 			python = { "pylint" },
 		}
 
@@ -72,7 +68,12 @@ return {
 		vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
 			group = lint_augroup,
 			callback = function()
-				lint.try_lint()
+				-- Decide biome vs nothing per buffer, so the choice follows the project
+				if js_filetypes[vim.bo.filetype] then
+					lint.try_lint(get_js_linters())
+				else
+					lint.try_lint()
+				end
 			end,
 		})
 	end,
