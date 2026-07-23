@@ -52,10 +52,17 @@ return {
 			client.server_capabilities.documentRangeFormattingProvider = false
 
 			local opts = { noremap = true, silent = true, buffer = bufnr }
+			local builtin = require("telescope.builtin")
+			-- Navigation keymaps, kept consistent with lsp-config.lua (jdtls is
+			-- started by nvim-jdtls, so it doesn't share that on_attach).
+			vim.keymap.set("n", "gd", builtin.lsp_definitions, opts)
+			vim.keymap.set("n", "gR", builtin.lsp_references, opts)
+			vim.keymap.set("n", "gi", builtin.lsp_implementations, opts)
+			vim.keymap.set("n", "gt", builtin.lsp_type_definitions, opts)
+			vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+			vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
 			vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
 			vim.keymap.set({ "n", "v" }, "<leader>vca", vim.lsp.buf.code_action, opts)
-			vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-			vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
 
 			require("jdtls").setup_dap({ hotcodereplace = "auto" })
 			require("jdtls.dap").setup_dap_main_class_configs()
