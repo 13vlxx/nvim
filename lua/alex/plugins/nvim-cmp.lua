@@ -35,9 +35,6 @@ return {
 				["<C-k>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
 				["<C-Space>"] = cmp.mapping.complete(),
 				["<CR>"] = cmp.mapping.confirm({ select = true }), -- Entrée pour accepter le menu cmp
-				["<Tab>"] = cmp.mapping(function(fallback)
-					fallback() -- Tab toujours pour Copilot
-				end, { "i", "s" }),
 				["<C-y>"] = cmp.mapping.confirm({ select = true }),
 				["<S-CR>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
 				["<C-CR>"] = function(fallback)
@@ -96,9 +93,7 @@ return {
 				end,
 			},
 			experimental = {
-				ghost_text = {
-					hl_group = "CmpGhostText",
-				},
+				ghost_text = false, -- le ghost text vient de Copilot
 			},
 			sorting = {
 				priority_weight = 2,

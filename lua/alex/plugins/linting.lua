@@ -25,18 +25,9 @@ return {
 			return root or vim.fn.getcwd()
 		end
 
-		local function has_biome_config()
+		local function has_config(files)
 			local root = find_project_root()
-			local biome_files = {
-				"biome.json",
-				"biome.jsonc",
-				".biomerc",
-				".biomerc.json",
-				".biomerc.jsonc",
-				".biomerc.cjs",
-			}
-
-			for _, file in ipairs(biome_files) do
+			for _, file in ipairs(files) do
 				local full_path = root .. "/" .. file
 				if vim.fn.filereadable(full_path) == 1 then
 					return true
@@ -45,9 +36,31 @@ return {
 			return false
 		end
 
-		-- eslint is handled by the eslint LSP; nvim-lint only covers biome for JS/TS
+		local function has_biome_config()
+			return has_config({
+				"biome.json",
+				"biome.jsonc",
+				".biomerc",
+				".biomerc.json",
+				".biomerc.jsonc",
+				".biomerc.cjs",
+			})
+		end
+
+		local function has_oxlint_config()
+			return has_config({ ".oxlintrc.json" })
+		end
+
+		-- eslint is handled by the eslint LSP; nvim-lint covers biome and oxlint for JS/TS
 		local function get_js_linters()
-			return has_biome_config() and { "biomejs" } or {}
+			local linters = {}
+			if has_oxlint_config() then
+				table.insert(linters, "oxlint")
+			end
+			if has_biome_config() then
+				table.insert(linters, "biomejs")
+			end
+			return linters
 		end
 
 		local js_filetypes = {
