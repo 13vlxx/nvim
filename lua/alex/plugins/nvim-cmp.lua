@@ -48,7 +48,7 @@ return {
 			}, {
 				{ name = "buffer" },
 			}),
-			-- Copilot retiré des sources, il utilisera seulement le ghost text
+			-- Supermaven fournit le ghost text, pas de source cmp
 			formatting = {
 				format = function(entry, item)
 					local icons = {
@@ -93,7 +93,7 @@ return {
 				end,
 			},
 			experimental = {
-				ghost_text = false, -- le ghost text vient de Copilot
+				ghost_text = false, -- le ghost text vient de Supermaven
 			},
 			sorting = {
 				priority_weight = 2,
