@@ -28,28 +28,10 @@ return {
 			embed_image_as_base64 = false,
 			max_base64_size = 10,
 
+			-- destination partagée avec <leader>pf (voir lua/alex/util/paste.lua),
+			-- pour que les images et les fichiers collés atterrissent au même endroit
 			dir_path = function()
-				local ok, nvim_tree_api = pcall(require, "nvim-tree.api")
-				if ok then
-					local node = nvim_tree_api.tree.get_node_under_cursor()
-					if node and node.absolute_path then
-						if node.type == "file" then
-							return vim.fn.fnamemodify(node.absolute_path, ":h")
-						else
-							return node.absolute_path
-						end
-					end
-				end
-
-				local cwd = vim.fn.getcwd()
-				local vault_name = "sethVault"
-				local vault_images_path = "Archives/All-Vault-Images/"
-
-				if cwd:match(vault_name) then
-					return vault_images_path
-				else
-					return "assets"
-				end
+				return require("alex.util.paste").img_dir_path()
 			end,
 		},
 	},

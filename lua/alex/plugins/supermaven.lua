@@ -10,7 +10,6 @@ return {
 				accept_word = "<C-l>",
 			},
 			ignore_filetypes = {
-				yaml = true,
 				markdown = true,
 				help = true,
 				gitcommit = true,

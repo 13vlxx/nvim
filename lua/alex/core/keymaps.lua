@@ -7,6 +7,12 @@ local keymap = vim.keymap
 keymap.set("i", "jk", "<ESC>", { desc = "Exit insert mode with jk" })
 
 keymap.set("n", "<leader>nh", ":nohl<CR>", { desc = "Clear search highlights" })
+
+-- coller les fichiers/dossiers copiés dans le Finder vers le dossier sous le
+-- curseur dans nvim-tree, sinon à côté du fichier courant
+keymap.set("n", "<leader>pf", function()
+	require("alex.util.paste").paste_files()
+end, { desc = "Paste files/folders from system clipboard" })
 keymap.set("n", "<Esc>", ":nohlsearch<CR>", { desc = "Clear search", silent = true })
 
 -- duplicate line / selection below
