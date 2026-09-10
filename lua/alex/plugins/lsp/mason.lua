@@ -55,6 +55,9 @@ return {
 				"stylua",
 				"isort",
 				"pylint",
+				-- conform formate le python avec ruff (organize_imports + format) :
+				-- sans ce binaire, le formatage à la sauvegarde échoue en silence
+				"ruff",
 				"clangd",
 				"biome",
 				"rustfmt",
