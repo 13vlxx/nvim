@@ -44,7 +44,10 @@ return {
 				conform.format({
 					bufnr = args.buf,
 					lsp_fallback = true,
-					timeout_ms = 500,
+					-- 500 ms suffit à chaud, mais pas au premier lancement d'un
+					-- formateur fraîchement installé (vérification Gatekeeper) :
+					-- le formatage échouait alors sans rien afficher
+					timeout_ms = 2000,
 				})
 			end,
 		})
