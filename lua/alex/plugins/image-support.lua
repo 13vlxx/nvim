@@ -28,10 +28,10 @@ return {
 			embed_image_as_base64 = false,
 			max_base64_size = 10,
 
-			-- destination partagée avec <leader>pf (voir lua/alex/util/paste.lua),
+			-- destination partagée avec <leader>pf (voir lua/alex/utils/paste.lua),
 			-- pour que les images et les fichiers collés atterrissent au même endroit
 			dir_path = function()
-				return require("alex.util.paste").img_dir_path()
+				return require("alex.utils.paste").img_dir_path()
 			end,
 		},
 	},

@@ -1,3 +1,6 @@
+-- Colorschemes disponibles. Tous sont chargés au démarrage (lazy = false)
+-- pour apparaître dans la complétion de :colorscheme <Tab>.
+-- La sélection/persistance est dans alex.utils.colorscheme.
 return {
 	{
 		"folke/tokyonight.nvim",
@@ -14,7 +17,7 @@ return {
 		lazy = false,
 		priority = 1000,
 		opts = {
-			flavour = "mocha", -- latte, frappe, macchiato, mocha, auto
+			flavour = "macchiato", -- latte, frappe, macchiato, mocha, auto
 			background = { -- utilisé quand flavour = "auto" (:h background)
 				light = "latte",
 				dark = "mocha",

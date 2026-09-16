@@ -15,27 +15,17 @@ return {
 
 		vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
 
-		-- Les groupes CmpNormal/CmpBorder/CmpSel sont définis par certains thèmes
-		-- (tokyonight, nord, gruvbox). Pour les autres (catppuccin…), on retombe
-		-- sur les groupes standard du thème.
-		local function cmp_fallback_hl()
-			vim.api.nvim_set_hl(0, "CmpNormal", { link = "Pmenu", default = true })
-			vim.api.nvim_set_hl(0, "CmpBorder", { link = "FloatBorder", default = true })
-			vim.api.nvim_set_hl(0, "CmpSel", { link = "PmenuSel", default = true })
-		end
-		cmp_fallback_hl()
-		vim.api.nvim_create_autocmd("ColorScheme", { callback = cmp_fallback_hl })
-
 		return {
 			completion = {
 				completeopt = "menu,menuone,noinsert" .. (auto_select and "" or ",noselect"),
 			},
+			-- groupes standard : le menu suit automatiquement le colorscheme actif
 			window = {
 				completion = cmp.config.window.bordered({
-					winhighlight = "Normal:CmpNormal,FloatBorder:CmpBorder,CursorLine:CmpSel,Search:None",
+					winhighlight = "Normal:Pmenu,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
 				}),
 				documentation = cmp.config.window.bordered({
-					winhighlight = "Normal:CmpNormal,FloatBorder:CmpBorder,CursorLine:CmpSel,Search:None",
+					winhighlight = "Normal:Pmenu,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
 				}),
 			},
 			preselect = auto_select and cmp.PreselectMode.Item or cmp.PreselectMode.None,
