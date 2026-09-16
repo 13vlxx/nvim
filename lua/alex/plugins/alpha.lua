@@ -1,20 +1,28 @@
 return {
 	"goolord/alpha-nvim",
 	event = "VimEnter",
-	dependencies = {
-		{ "MaximilianLloyd/ascii.nvim", dependencies = { "MunifTanjim/nui.nvim" } },
-	},
 	config = function()
 		local alpha = require("alpha")
 		local dashboard = require("alpha.themes.dashboard")
-		local ascii = require("ascii")
 
 		local function i(n)
 			return vim.fn.nr2char(n)
 		end
 
-		-- Set header
-		dashboard.section.header.val = ascii.art.text.neovim.sharp
+		-- Set header : アレックス (Hiragino Sans W8 rendu en demi-blocs)
+		local header = {
+			"                                                                ▄▄▄▄",
+			"  ████████████████     ████                                    ▄████▄▄▄▄▄▄     ▄███████████▄",
+			"  ▀▀▀▀▀▀▀▀▀▀▀▀████▀    ████                  ▄▄▄    ▄         ▄████████████    ████████████▀",
+			"       ▄██▄  ▄███▀     ███               ███ ▀███  ███▀     ▄████▀▀▀▀▀████            ▄███▀",
+			"       ████████▀       ███        █▄      ███ ███  ███     ████▀     ▄███▀           ▄███▀",
+			"       ████ ▀▀         ███      ▄████     ▀▀▀     ███▀      ▀▀      ▄███▀          ▄█████▄",
+			"      ▄███             ███   ▄▄████▀            ▄███▀             ▄████▀         ▄████▀████▄",
+			"   ▄▄████▀             ██████████▀           ▄▄████            ▄█████▀        ▄█████▀   ▀████▄",
+			"  ▀████▀               ██████▀▀▀            ▀███▀▀           ▀█████▀          ▀███▀       ▀██▀",
+			"    ▀                   ▀▀                   ▀▀                ▀▀",
+		}
+		dashboard.section.header.val = header
 
 		-- Set menu
 		dashboard.section.buttons.val = {
