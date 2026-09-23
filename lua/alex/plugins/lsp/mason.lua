@@ -60,6 +60,8 @@ return {
 				"ruff",
 				"clangd",
 				"biome",
+				"oxlint",
+				"oxfmt",
 				"rustfmt",
 				-- java: formatter + jdtls debug/test bundles
 				"google-java-format",

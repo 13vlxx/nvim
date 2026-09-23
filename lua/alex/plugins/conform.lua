@@ -11,15 +11,15 @@ return {
 				rust = { "rustfmt" },
 				go = { "goimports", "gofumpt" },
 				java = { "google-java-format" },
-				javascript = { "biome", "prettier", "prettier_global", stop_after_first = true },
-				typescript = { "biome", "prettier", "prettier_global", stop_after_first = true },
-				javascriptreact = { "biome", "prettier", "prettier_global", stop_after_first = true },
-				typescriptreact = { "biome", "prettier", "prettier_global", stop_after_first = true },
+				javascript = { "biome", "oxfmt", "prettier", "prettier_global", stop_after_first = true },
+				typescript = { "biome", "oxfmt", "prettier", "prettier_global", stop_after_first = true },
+				javascriptreact = { "biome", "oxfmt", "prettier", "prettier_global", stop_after_first = true },
+				typescriptreact = { "biome", "oxfmt", "prettier", "prettier_global", stop_after_first = true },
 				html = { "biome", "prettier", "prettier_global", stop_after_first = true },
 				css = { "biome", "prettier", "prettier_global", stop_after_first = true },
 				scss = { "biome", "prettier", "prettier_global", stop_after_first = true },
-				json = { "biome", "prettier", "prettier_global", stop_after_first = true },
-				jsonc = { "biome", "prettier", "prettier_global", stop_after_first = true },
+				json = { "biome", "oxfmt", "prettier", "prettier_global", stop_after_first = true },
+				jsonc = { "biome", "oxfmt", "prettier", "prettier_global", stop_after_first = true },
 				yaml = { "prettier", "prettier_global", stop_after_first = true },
 				markdown = { "prettier", "prettier_global", stop_after_first = true },
 				prisma = { "prettier", "prettier_global", stop_after_first = true },
@@ -30,6 +30,12 @@ return {
 				},
 				biome = {
 					require_cwd = true,
+				},
+				oxfmt = {
+					require_cwd = true,
+					-- le défaut de conform inclut vite.config.ts/js : sans ça, oxfmt
+					-- formaterait n'importe quel projet Vite, même ceux sous prettier
+					cwd = require("conform.util").root_file({ ".oxfmtrc.json", ".oxfmtrc.jsonc", "oxfmt.config.ts" }),
 				},
 				prettier_global = {
 					command = vim.fn.stdpath("data") .. "/mason/bin/prettier",
