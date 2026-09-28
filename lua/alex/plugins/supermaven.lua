@@ -17,6 +17,7 @@ return {
 				hgcommit = true,
 				svn = true,
 				cvs = true,
+				TelescopePrompt = true,
 				[""] = true,
 			},
 			color = {
@@ -24,7 +25,7 @@ return {
 				cterm = 244,
 			},
 			log_level = "warn",
-			disable_inline_completion = false, -- ghost text activé
+			disable_inline_completion = false,
 			disable_keymaps = false,
 			condition = function()
 				return false

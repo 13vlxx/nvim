@@ -12,11 +12,16 @@ return {
 		local actions = require("telescope.actions")
 		local builtin = require("telescope.builtin")
 
-		telescope.load_extension("fzf")
-
 		telescope.setup({
 			defaults = {
-				path_display = { "smart" },
+				path_display = function(_, path)
+					local parts = vim.split(path, "/", { plain = true })
+					if #parts <= 3 then
+						return path
+					end
+					return "../" .. table.concat(parts, "/", #parts - 2)
+				end,
+				preview = { filesize_limit = 0.5 },
 				layout_config = {
 					width = 0.95,
 					horizontal = { preview_width = 0.6 },
@@ -30,18 +35,22 @@ return {
 						["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
 					},
 				},
-				file_ignore_patterns = {
-					"^.git/",
-					"^node_modules/",
-					"^dist/",
-					"^.venv/",
-					"%.pyc",
-					"%.o",
-				},
 			},
 			pickers = {
 				find_files = {
-					hidden = true,
+					find_command = {
+						"rg",
+						"--files",
+						"--hidden",
+						"--no-ignore-vcs",
+						"--glob", "!**/.git/*",
+						"--glob", "!**/node_modules/*",
+						"--glob", "!**/dist/*",
+						"--glob", "!**/.venv/*",
+						"--glob", "!**/target/*",
+						"--glob", "!*.pyc",
+						"--glob", "!*.o",
+					},
 				},
 				diagnostics = {
 					line_width = "full",
@@ -49,6 +58,8 @@ return {
 				},
 			},
 		})
+
+		telescope.load_extension("fzf")
 
 		vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Fuzzy find files in cwd" })
 		vim.keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Fuzzy find recent files" })
