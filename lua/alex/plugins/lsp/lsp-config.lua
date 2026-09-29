@@ -1,6 +1,18 @@
 return {
 	"neovim/nvim-lspconfig",
 	event = { "BufReadPre", "BufNewFile" },
+	init = function()
+		-- Neovim détecte les fichiers compose comme du simple yaml : sans ce filetype,
+		-- docker_compose_language_service ne s'attache jamais
+		vim.filetype.add({
+			pattern = {
+				[".*/compose%.ya?ml"] = "yaml.docker-compose",
+				[".*/compose%..+%.ya?ml"] = "yaml.docker-compose",
+				[".*/docker%-compose%.ya?ml"] = "yaml.docker-compose",
+				[".*/docker%-compose%..+%.ya?ml"] = "yaml.docker-compose",
+			},
+		})
+	end,
 	dependencies = {
 		{ "hrsh7th/cmp-nvim-lsp", lazy = false },
 		{ "antosha417/nvim-lsp-file-operations", config = true },
@@ -8,47 +20,19 @@ return {
 		"b0o/schemastore.nvim",
 	},
 	config = function()
-		local cmp_nvim_lsp = require("cmp_nvim_lsp")
 		local keymap = vim.keymap
 		local builtin = require("telescope.builtin")
 
 		keymap.set("n", "<leader>d", vim.diagnostic.open_float, { noremap = true, silent = true })
 		keymap.set("n", "<leader>D", builtin.diagnostics, { noremap = true, silent = true })
 
-		local on_attach = function(client, bufnr)
-			local opts = { noremap = true, silent = true, buffer = bufnr }
-
-			client.server_capabilities.documentFormattingProvider = false
-			client.server_capabilities.documentRangeFormattingProvider = false
-
-			if client.server_capabilities.definitionProvider then
-				keymap.set("n", "gd", builtin.lsp_definitions, opts)
-			end
-			if client.server_capabilities.referencesProvider then
-				keymap.set("n", "gR", builtin.lsp_references, opts)
-			end
-			if client.server_capabilities.implementationProvider then
-				keymap.set("n", "gi", builtin.lsp_implementations, opts)
-			end
-			if client.server_capabilities.typeDefinitionProvider then
-				keymap.set("n", "gt", builtin.lsp_type_definitions, opts)
-			end
-
-			keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-			keymap.set("n", "K", vim.lsp.buf.hover, opts)
-			keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-			keymap.set({ "n", "v" }, "<leader>vca", vim.lsp.buf.code_action, opts)
-			keymap.set("n", "<leader>rs", "<cmd>LspRestart<CR>", opts)
-		end
-
-		local capabilities = cmp_nvim_lsp.default_capabilities()
 		vim.diagnostic.config({
 			signs = {
 				text = {
-					[vim.diagnostic.severity.ERROR] = " ",
-					[vim.diagnostic.severity.WARN] = " ",
+					[vim.diagnostic.severity.ERROR] = " ",
+					[vim.diagnostic.severity.WARN] = " ",
 					[vim.diagnostic.severity.HINT] = "󰠠 ",
-					[vim.diagnostic.severity.INFO] = " ",
+					[vim.diagnostic.severity.INFO] = " ",
 				},
 			},
 			virtual_text = { prefix = "●" },
@@ -58,24 +42,76 @@ return {
 			float = { border = "rounded", source = true, wrap = true, max_width = 80 },
 		})
 
+		-- Commun à tous les serveurs. Les keymaps passent par LspAttach plutôt que par un
+		-- on_attach par serveur, qui écrasait celui de lspconfig (:ClangdSwitchSourceHeader,
+		-- :LspEslintFixAll, :LspPyrightOrganizeImports…)
+		vim.lsp.config("*", { capabilities = require("cmp_nvim_lsp").default_capabilities() })
+
+		local eslint_fix_group = vim.api.nvim_create_augroup("alex-eslint-fix", { clear = true })
+
+		vim.api.nvim_create_autocmd("LspAttach", {
+			group = vim.api.nvim_create_augroup("alex-lsp-attach", { clear = true }),
+			callback = function(event)
+				local client = vim.lsp.get_client_by_id(event.data.client_id)
+				if not client then
+					return
+				end
+				local bufnr = event.buf
+				local opts = { noremap = true, silent = true, buffer = bufnr }
+
+				-- Le formatage est géré uniquement par conform.nvim
+				client.server_capabilities.documentFormattingProvider = false
+				client.server_capabilities.documentRangeFormattingProvider = false
+
+				if client.server_capabilities.definitionProvider then
+					keymap.set("n", "gd", builtin.lsp_definitions, opts)
+				end
+				if client.server_capabilities.referencesProvider then
+					keymap.set("n", "gR", builtin.lsp_references, opts)
+				end
+				if client.server_capabilities.implementationProvider then
+					keymap.set("n", "gi", builtin.lsp_implementations, opts)
+				end
+				if client.server_capabilities.typeDefinitionProvider then
+					keymap.set("n", "gt", builtin.lsp_type_definitions, opts)
+				end
+
+				keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+				keymap.set("n", "K", vim.lsp.buf.hover, opts)
+				keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+				keymap.set({ "n", "v" }, "<leader>vca", vim.lsp.buf.code_action, opts)
+				keymap.set("n", "<leader>rs", "<cmd>LspRestart<CR>", opts)
+
+				-- yamlls (schéma compose de SchemaStore) propose déjà toutes ces clés : sans
+				-- ça, chacune apparaît en double dans le menu. Hover et diagnostics restent
+				if client.name == "docker_compose_language_service" then
+					client.server_capabilities.completionProvider = nil
+				end
+
+				-- Auto-fix eslint à la sauvegarde (le formatage reste à conform)
+				if client.name == "eslint" then
+					vim.api.nvim_clear_autocmds({ group = eslint_fix_group, buffer = bufnr })
+					vim.api.nvim_create_autocmd("BufWritePre", {
+						group = eslint_fix_group,
+						buffer = bufnr,
+						command = "LspEslintFixAll",
+					})
+				end
+			end,
+		})
+
+		-- root_dir et filetypes sont laissés à lspconfig quand ses défauts conviennent :
+		-- un vim.fs.root(0, …) ici n'était calculé qu'une fois, pour le premier buffer
+
 		vim.lsp.config("clangd", {
 			cmd = {
 				"clangd",
 				"--background-index",
 				"--clang-tidy",
 				"--completion-style=detailed",
-				"--cross-file-rename",
 				"--header-insertion=never",
 			},
 			filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
-			root_dir = vim.fs.root(0, {
-				"compile_commands.json",
-				".clangd",
-				"CMakeLists.txt",
-				".git",
-			}),
-			capabilities = capabilities,
-			on_attach = on_attach,
 			settings = {
 				clangd = {
 					fallbackFlags = { "-std=c++17", "-Wall", "-Wextra" },
@@ -84,8 +120,6 @@ return {
 		})
 
 		vim.lsp.config("lua_ls", {
-			capabilities = capabilities,
-			on_attach = on_attach,
 			settings = {
 				Lua = {
 					diagnostics = { globals = { "vim" } },
@@ -101,70 +135,21 @@ return {
 			},
 		})
 
-		vim.lsp.config("gopls", {
-			cmd = { "gopls", "serve" },
-			filetypes = { "go", "gomod", "gowork", "gotmpl" },
-			root_dir = vim.fs.root(0, { "go.work", "go.mod", ".git" }),
-			capabilities = capabilities,
-			on_attach = on_attach,
-			settings = {
-				gopls = {
-					staticcheck = true,
-					completeUnimported = true,
-					usePlaceholders = true,
-					semanticTokens = true,
-				},
-			},
-		})
-
 		vim.lsp.config("ts_ls", {
-			filetypes = {
-				"javascript",
-				"javascriptreact",
-				"typescript",
-				"typescriptreact",
-			},
-			root_dir = vim.fs.root(0, { "package.json", "tsconfig.json", ".git" }),
-			capabilities = capabilities,
-			on_attach = on_attach,
 			init_options = {
 				hostInfo = "neovim",
 				maxTsServerMemory = 4096,
 			},
 		})
 
-		-- lspconfig's default on_attach registers the LspEslintFixAll command; keep it
-		local eslint_base_on_attach = vim.lsp.config.eslint.on_attach
-		vim.lsp.config("eslint", {
-			capabilities = capabilities,
-			on_attach = function(client, bufnr)
-				if eslint_base_on_attach then
-					eslint_base_on_attach(client, bufnr)
-				end
-				on_attach(client, bufnr)
-				-- Auto-fix eslint rules on save (formatting stays with conform)
-				vim.api.nvim_create_autocmd("BufWritePre", {
-					buffer = bufnr,
-					command = "LspEslintFixAll",
-				})
-			end,
-		})
-
 		vim.lsp.config("angularls", {
 			root_markers = { "angular.json" },
-			capabilities = capabilities,
-			on_attach = on_attach,
+			-- sans ça, ngserver est lancé sur chaque fichier TS hors projet Angular
+			workspace_required = true,
 		})
 
 		vim.lsp.config("html", {
 			filetypes = { "html", "htmlangular" },
-			capabilities = capabilities,
-			on_attach = on_attach,
-		})
-
-		vim.lsp.config("cssls", {
-			capabilities = capabilities,
-			on_attach = on_attach,
 		})
 
 		vim.lsp.config("tailwindcss", {
@@ -180,19 +165,6 @@ return {
 				"vue",
 				"svelte",
 			},
-			root_dir = vim.fs.root(0, {
-				"tailwind.config.js",
-				"tailwind.config.cjs",
-				"tailwind.config.mjs",
-				"tailwind.config.ts",
-				"postcss.config.js",
-				"postcss.config.cjs",
-				"postcss.config.mjs",
-				"postcss.config.ts",
-				"package.json",
-			}),
-			capabilities = capabilities,
-			on_attach = on_attach,
 			settings = {
 				tailwindCSS = {
 					includeLanguages = {
@@ -229,9 +201,6 @@ return {
 		})
 
 		vim.lsp.config("jsonls", {
-			filetypes = { "json", "jsonc" },
-			capabilities = capabilities,
-			on_attach = on_attach,
 			settings = {
 				json = {
 					schemas = require("schemastore").json.schemas(),
@@ -241,8 +210,6 @@ return {
 		})
 
 		vim.lsp.config("pyright", {
-			capabilities = capabilities,
-			on_attach = on_attach,
 			settings = {
 				python = {
 					analysis = {
@@ -256,8 +223,6 @@ return {
 		})
 
 		vim.lsp.config("rust_analyzer", {
-			capabilities = capabilities,
-			on_attach = on_attach,
 			settings = {
 				["rust-analyzer"] = {
 					check = {
@@ -268,30 +233,16 @@ return {
 			},
 		})
 
-		vim.lsp.config("dockerls", {
-			filetypes = { "dockerfile" },
-			capabilities = capabilities,
-			on_attach = on_attach,
-		})
-
-		vim.lsp.config("docker_compose_language_service", {
-			filetypes = { "yaml.docker-compose" },
-			root_dir = vim.fs.root(0, { "docker-compose.yml", "docker-compose.yaml", "compose.yml", "compose.yaml" }),
-			capabilities = capabilities,
-			on_attach = on_attach,
-		})
-
 		vim.lsp.config("yamlls", {
-			filetypes = { "yaml", "yml" },
-			capabilities = capabilities,
-			on_attach = on_attach,
 			settings = {
 				yaml = {
 					validate = true,
 					hover = true,
 					completion = true,
+					-- catalogue SchemaStore fourni par schemastore.nvim (compose, GitHub Actions,
+					-- GitLab CI…) plutôt que téléchargé par le serveur
 					schemaStore = { enable = false, url = "" },
-					schemas = {
+					schemas = vim.tbl_extend("force", require("schemastore").yaml.schemas(), {
 						kubernetes = {
 							"*-deployment.yaml",
 							"*-service.yaml",
@@ -310,6 +261,21 @@ return {
 							"manifests/**/*.yaml",
 							"manifests/**/*.yml",
 						},
+					}),
+				},
+			},
+		})
+
+		-- taplo 0.10 ne sait plus lire le catalogue SchemaStore (format changé) : sans
+		-- association explicite, aucune complétion dans Cargo.toml / pyproject.toml
+		vim.lsp.config("taplo", {
+			settings = {
+				evenBetterToml = {
+					schema = {
+						associations = {
+							["Cargo\\.toml$"] = "https://www.schemastore.org/cargo.json",
+							["pyproject\\.toml$"] = "https://www.schemastore.org/pyproject.json",
+						},
 					},
 				},
 			},
@@ -318,7 +284,6 @@ return {
 		vim.lsp.enable({
 			"clangd",
 			"lua_ls",
-			"gopls",
 			"ts_ls",
 			"eslint",
 			"angularls",
@@ -331,6 +296,7 @@ return {
 			"dockerls",
 			"docker_compose_language_service",
 			"yamlls",
+			"taplo",
 		})
 	end,
 }

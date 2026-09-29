@@ -10,10 +10,36 @@ return {
 	},
 	opts = function()
 		local cmp = require("cmp")
-		local defaults = require("cmp.config.default")()
 		local auto_select = true
 
-		vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
+		-- construite une seule fois, pas à chaque item affiché dans le menu
+		local icons = {
+			Class = " ",
+			Color = " ",
+			Constant = " ",
+			Constructor = " ",
+			Enum = " ",
+			EnumMember = " ",
+			Event = " ",
+			Field = " ",
+			File = " ",
+			Folder = " ",
+			Function = " ",
+			Interface = " ",
+			Keyword = " ",
+			Method = " ",
+			Module = " ",
+			Operator = " ",
+			Property = " ",
+			Reference = " ",
+			Snippet = " ",
+			Struct = " ",
+			Text = " ",
+			TypeParameter = " ",
+			Unit = " ",
+			Value = " ",
+			Variable = " ",
+		}
 
 		return {
 			completion = {
@@ -51,65 +77,15 @@ return {
 			}),
 			-- Supermaven fournit le ghost text, pas de source cmp
 			formatting = {
-				format = function(entry, item)
-					local icons = {
-						Copilot = " ",
-						Class = " ",
-						Color = " ",
-						Constant = " ",
-						Constructor = " ",
-						Enum = " ",
-						EnumMember = " ",
-						Event = " ",
-						Field = " ",
-						File = " ",
-						Folder = " ",
-						Function = " ",
-						Interface = " ",
-						Keyword = " ",
-						Method = " ",
-						Module = " ",
-						Operator = " ",
-						Property = " ",
-						Reference = " ",
-						Snippet = " ",
-						Struct = " ",
-						Text = " ",
-						TypeParameter = " ",
-						Unit = " ",
-						Value = " ",
-						Variable = " ",
-					}
-
+				format = function(_, item)
 					if icons[item.kind] then
 						item.kind = icons[item.kind] .. item.kind
 					end
-
-					-- Ajouter l'icône Copilot pour les suggestions copilot
-					if entry.source.name == "copilot" then
-						item.kind = icons.Copilot .. "Copilot"
-					end
-
 					return item
 				end,
 			},
 			experimental = {
 				ghost_text = false, -- le ghost text vient de Supermaven
-			},
-			sorting = {
-				priority_weight = 2,
-				comparators = {
-					-- Priorité basée sur le group_index et priority
-					require("cmp.config.compare").offset,
-					require("cmp.config.compare").exact,
-					require("cmp.config.compare").score,
-					require("cmp.config.compare").recently_used,
-					require("cmp.config.compare").locality,
-					require("cmp.config.compare").kind,
-					require("cmp.config.compare").sort_text,
-					require("cmp.config.compare").length,
-					require("cmp.config.compare").order,
-				},
 			},
 		}
 	end,

@@ -44,6 +44,7 @@ return {
 				"dockerls",
 				"docker_compose_language_service",
 				"yamlls",
+				"taplo",
 				"jdtls", -- installed here, but started by nvim-jdtls (not vim.lsp.enable)
 			},
 		})
