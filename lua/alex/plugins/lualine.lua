@@ -10,6 +10,23 @@ return {
 			options = {
 				theme = "auto",
 			},
+			-- statusline dédiée pour la fenêtre nvim-tree : nom du dossier courant + branche git
+			extensions = {
+				{
+					filetypes = { "NvimTree" },
+					sections = {
+						lualine_a = {
+							{
+								function()
+									return vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+								end,
+								icon = "󰉋",
+							},
+						},
+						lualine_b = { "branch" },
+					},
+				},
+			},
 			sections = {
 				lualine_x = {
 					{

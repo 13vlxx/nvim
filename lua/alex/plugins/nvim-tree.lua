@@ -15,6 +15,8 @@ return {
 			},
 			-- change folder arrow icons
 			renderer = {
+				-- chemin de la racine avec ~ (ex: ~/Documents/Pro/oreus/oreus_back_end_v1)
+				root_folder_label = ":~",
 				indent_markers = {
 					enable = true,
 				},
