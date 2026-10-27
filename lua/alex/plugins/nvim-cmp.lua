@@ -75,7 +75,7 @@ return {
 			}, {
 				{ name = "buffer" },
 			}),
-			-- Supermaven fournit le ghost text, pas de source cmp
+			-- NeoCodeium fournit le ghost text, pas de source cmp
 			formatting = {
 				format = function(_, item)
 					if icons[item.kind] then
@@ -85,7 +85,7 @@ return {
 				end,
 			},
 			experimental = {
-				ghost_text = false, -- le ghost text vient de Supermaven
+				ghost_text = false, -- le ghost text vient de NeoCodeium
 			},
 		}
 	end,
