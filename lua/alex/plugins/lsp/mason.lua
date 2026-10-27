@@ -63,7 +63,6 @@ return {
 				"biome",
 				"oxlint",
 				"oxfmt",
-				"rustfmt",
 				-- java: formatter + jdtls debug/test bundles
 				"google-java-format",
 				"java-debug-adapter",
