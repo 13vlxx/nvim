@@ -45,6 +45,7 @@ return {
 				"docker_compose_language_service",
 				"yamlls",
 				"taplo",
+				"terraformls",
 				"jdtls", -- installed here, but started by nvim-jdtls (not vim.lsp.enable)
 			},
 		})
@@ -63,6 +64,9 @@ return {
 				"biome",
 				"oxlint",
 				"oxfmt",
+				-- CLI terraform : utilisé par conform (terraform fmt) et par terraform-ls
+				-- pour la validation ; sans lui, aucun formatage des .tf
+				"terraform",
 				-- java: formatter + jdtls debug/test bundles
 				"google-java-format",
 				"java-debug-adapter",

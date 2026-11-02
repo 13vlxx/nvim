@@ -297,6 +297,7 @@ return {
 			"docker_compose_language_service",
 			"yamlls",
 			"taplo",
+			"terraformls",
 		})
 	end,
 }

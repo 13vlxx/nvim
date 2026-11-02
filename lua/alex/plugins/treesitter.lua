@@ -35,6 +35,8 @@ return {
 			"rust",
 			"ron",
 			"angular",
+			"terraform",
+			"hcl",
 		},
 
 		highlight = {

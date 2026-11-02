@@ -23,6 +23,8 @@ return {
 				yaml = { "prettier", "prettier_global", stop_after_first = true },
 				markdown = { "prettier", "prettier_global", stop_after_first = true },
 				prisma = { "prettier", "prettier_global", stop_after_first = true },
+				terraform = { "terraform_fmt" },
+				["terraform-vars"] = { "terraform_fmt" },
 			},
 			formatters = {
 				prettier = {
