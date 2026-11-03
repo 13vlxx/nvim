@@ -10,7 +10,6 @@ return {
 					return vim.o.columns * 0.4
 				end
 			end,
-			open_mapping = [[<D-j>]],
 			hide_numbers = true,
 			autochdir = true,
 			shade_terminals = false,
@@ -72,7 +71,9 @@ return {
 			callback = set_terminal_keymaps,
 		})
 
-		vim.keymap.set("n", "<leader>t1", "<cmd>1ToggleTerm<CR>", { desc = "Toggle terminal 1" })
+		-- Normal mode only: an insert/terminal mapping on <leader>tt would fire on every typed " tt"
+		vim.keymap.set("n", "<leader>tt", '<cmd>execute v:count . "ToggleTerm"<CR>', { desc = "Toggle terminal" })
+		vim.keymap.set("n", "<leader>t1","<cmd>1ToggleTerm<CR>", { desc = "Toggle terminal 1" })
 		vim.keymap.set("n", "<leader>t2", "<cmd>2ToggleTerm<CR>", { desc = "Toggle terminal 2" })
 		vim.keymap.set("n", "<leader>t3", "<cmd>3ToggleTerm<CR>", { desc = "Toggle terminal 3" })
 		vim.keymap.set("n", "<leader>t4", "<cmd>4ToggleTerm<CR>", { desc = "Toggle terminal 4" })
