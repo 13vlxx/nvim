@@ -135,11 +135,30 @@ return {
 			},
 		})
 
+		-- astro-language-server embarque typescript et @astrojs/ts-plugin
+		local astro_ls_dir = vim.fn.stdpath("data") .. "/mason/packages/astro-language-server"
+
 		vim.lsp.config("ts_ls", {
 			init_options = {
 				hostInfo = "neovim",
 				maxTsServerMemory = 4096,
+				-- sans ce plugin, tsserver ne résout pas les imports de .astro depuis un .ts
+				plugins = {
+					{ name = "@astrojs/ts-plugin", location = astro_ls_dir },
+				},
 			},
+		})
+
+		vim.lsp.config("astro", {
+			before_init = function(_, config)
+				local tsdk = require("lspconfig.util").get_typescript_server_path(config.root_dir)
+				-- TS absent du projet, ou TS 7 qui ne fournit plus tsserverlibrary.js :
+				-- dans les deux cas le serveur refuse de démarrer
+				if not vim.uv.fs_stat(tsdk .. "/tsserverlibrary.js") then
+					tsdk = astro_ls_dir .. "/node_modules/typescript/lib"
+				end
+				config.init_options.typescript.tsdk = tsdk
+			end,
 		})
 
 		vim.lsp.config("angularls", {
@@ -164,6 +183,7 @@ return {
 				"typescriptreact",
 				"vue",
 				"svelte",
+				"astro",
 			},
 			settings = {
 				tailwindCSS = {
@@ -298,6 +318,7 @@ return {
 			"yamlls",
 			"taplo",
 			"terraformls",
+			"astro",
 		})
 	end,
 }

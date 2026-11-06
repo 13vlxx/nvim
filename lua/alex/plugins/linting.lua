@@ -68,6 +68,7 @@ return {
 			typescript = true,
 			javascriptreact = true,
 			typescriptreact = true,
+			astro = true,
 			json = true,
 			jsonc = true,
 		}

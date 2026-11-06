@@ -46,6 +46,7 @@ return {
 				"yamlls",
 				"taplo",
 				"terraformls",
+				"astro",
 				"jdtls", -- installed here, but started by nvim-jdtls (not vim.lsp.enable)
 			},
 		})
