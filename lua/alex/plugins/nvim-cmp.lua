@@ -75,7 +75,7 @@ return {
 			}, {
 				{ name = "buffer" },
 			}),
-			-- NeoCodeium fournit le ghost text, pas de source cmp
+			-- Copilot fournit le ghost text, pas de source cmp
 			formatting = {
 				format = function(_, item)
 					if icons[item.kind] then
@@ -85,7 +85,7 @@ return {
 				end,
 			},
 			experimental = {
-				ghost_text = false, -- le ghost text vient de NeoCodeium
+				ghost_text = false, -- le ghost text vient de Copilot
 			},
 		}
 	end,
