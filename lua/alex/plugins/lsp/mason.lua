@@ -54,7 +54,9 @@ return {
 		-- Formatters/Linters
 		mason_tool_installer.setup({
 			ensure_installed = {
-				"prettier",
+				-- conform formate JS/TS/HTML/CSS/YAML/Markdown avec prettierd
+				-- (daemon) quand le projet n'utilise ni biome ni oxfmt
+				"prettierd",
 				"stylua",
 				"isort",
 				"pylint",

@@ -80,7 +80,8 @@ return {
 				keymap.set("n", "K", vim.lsp.buf.hover, opts)
 				keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
 				keymap.set({ "n", "v" }, "<leader>vca", vim.lsp.buf.code_action, opts)
-				keymap.set("n", "<leader>rs", "<cmd>LspRestart<CR>", opts)
+				-- Nvim 0.12 fournit :lsp, et lspconfig ne crée alors plus :LspRestart
+				keymap.set("n", "<leader>rs", "<cmd>lsp restart<CR>", opts)
 
 				-- yamlls (schéma compose de SchemaStore) propose déjà toutes ces clés : sans
 				-- ça, chacune apparaît en double dans le menu. Hover et diagnostics restent
@@ -310,6 +311,7 @@ return {
 			"html",
 			"cssls",
 			"tailwindcss",
+			"prismals",
 			"jsonls",
 			"pyright",
 			"rust_analyzer",
