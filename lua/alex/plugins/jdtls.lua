@@ -1,12 +1,16 @@
-return {
-	"mfussenegger/nvim-jdtls",
-	ft = "java",
-	dependencies = {
-		"williamboman/mason.nvim",
-		"mfussenegger/nvim-dap",
-		"hrsh7th/cmp-nvim-lsp",
-	},
-	config = function()
+vim.pack.add({
+	"https://github.com/mfussenegger/nvim-jdtls",
+	"https://github.com/williamboman/mason.nvim",
+	"https://github.com/mfussenegger/nvim-dap",
+	"https://github.com/hrsh7th/cmp-nvim-lsp",
+})
+
+-- Au premier buffer java (ft = "java" sous lazy.nvim) : $MASON n'existe qu'après
+-- mason.setup(), et hors projet java rien ne doit démarrer
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "java",
+	once = true,
+	callback = function()
 		local mason = vim.fn.expand("$MASON/packages")
 		local jdtls_path = mason .. "/jdtls"
 
@@ -132,4 +136,4 @@ return {
 		})
 		start_jdtls()
 	end,
-}
+})
