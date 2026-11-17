@@ -80,7 +80,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		end
 
 		keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-		keymap.set("n", "K", vim.lsp.buf.hover, opts)
+		-- sur un pli fermé : aperçu de son contenu (nvim-ufo), sinon la doc LSP
+		keymap.set("n", "K", function()
+			local ok, ufo = pcall(require, "ufo")
+			if not (ok and ufo.peekFoldedLinesUnderCursor()) then
+				vim.lsp.buf.hover()
+			end
+		end, opts)
 		keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
 		keymap.set({ "n", "v" }, "<leader>vca", vim.lsp.buf.code_action, opts)
 		-- Nvim 0.12 fournit :lsp, et lspconfig ne crée alors plus :LspRestart
@@ -146,6 +152,8 @@ vim.lsp.config("ts_ls", {
 	init_options = {
 		hostInfo = "neovim",
 		maxTsServerMemory = 4096,
+		-- propose les alias de tsconfig (paths) plutôt que les imports relatifs
+		preferences = { importModuleSpecifierPreference = "non-relative" },
 		-- sans ce plugin, tsserver ne résout pas les imports de .astro depuis un .ts
 		plugins = {
 			{ name = "@astrojs/ts-plugin", location = astro_ls_dir },

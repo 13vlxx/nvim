@@ -14,27 +14,32 @@ nvimtree.setup({
 		width = 40,
 		relativenumber = true,
 	},
-	-- change folder arrow icons
 	renderer = {
 		-- chemin de la racine avec ~ (ex: ~/Documents/Pro/oreus/oreus_back_end_v1)
 		root_folder_label = ":~",
+		highlight_git = "name", -- noms colorés selon leur état git (modifié, nouveau, ignoré…)
 		indent_markers = {
 			enable = true,
+			icons = { corner = "╰" }, -- arrondi, comme les bordures des fenêtres flottantes
 		},
 		icons = {
+			-- statut git dans la colonne de signes, à gauche : les noms restent alignés, et un
+			-- nom long n'est pas recouvert comme avec "right_align"
+			git_placement = "signcolumn",
 			glyphs = {
 				git = {
 					unstaged = "●",
 					staged = "✓",
-					unmerged = "",
+					unmerged = "\u{e727}",
 					renamed = "➜",
 					untracked = "★",
-					deleted = "",
+					deleted = "\u{f458}",
 					ignored = "◌",
 				},
+				-- mêmes chevrons que les plis (fillchars dans options.lua)
 				folder = {
-					arrow_closed = "", -- arrow when folder is closed
-					arrow_open = "", -- arrow when folder is open
+					arrow_closed = "\u{f460}",
+					arrow_open = "\u{f47c}",
 				},
 			},
 		},
@@ -50,11 +55,22 @@ nvimtree.setup({
 		},
 	},
 	filters = {
-		custom = { ".DS_Store" },
+		custom = { ".DS_Store", "^\\.git$" }, -- U pour les réafficher
 	},
 	git = {
 		ignore = false,
 	},
+})
+
+-- séparateur arbre/éditeur de la couleur de l'arbre : sur la ligne de statut, nvim peint
+-- cette colonne avec la statusline de l'arbre, sinon un cran apparaît avant « NORMAL »
+vim.api.nvim_create_autocmd("ColorScheme", {
+	callback = function()
+		local bg = vim.api.nvim_get_hl(0, { name = "NvimTreeNormal", link = false }).bg
+		if bg then -- thème transparent ou sans fond d'arbre : rien à aligner, on garde son séparateur
+			vim.api.nvim_set_hl(0, "NvimTreeWinSeparator", { fg = bg, bg = bg })
+		end
+	end,
 })
 
 -- set keymaps

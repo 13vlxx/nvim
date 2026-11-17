@@ -38,6 +38,12 @@ opt.splitright = true -- split vertical window on the right
 opt.splitbelow = true -- split horizontal window on the bottom
 
 -- folds (nvim-ufo, chargé après le premier affichage) : tout ouvert par défaut
-opt.foldcolumn = "0"
+opt.foldcolumn = "0" -- les icônes de pli sont dans la statuscolumn de snacks
 opt.foldlevel = 99
 opt.foldlevelstart = 99
+-- icônes de pli (lues par snacks.statuscolumn), pas de « ~ » après la fin du fichier,
+-- lignes supprimées hachurées dans les diffs. Glyphes en \u{…} : collés tels quels, ils se perdent
+opt.fillchars = { eob = " ", fold = " ", foldopen = "\u{f47c}", foldclose = "\u{f460}", foldsep = " ", diff = "╱" }
+
+-- lualine affiche déjà le mode : noice ne garde ainsi que « recording @q » pour lualine
+opt.showmode = false

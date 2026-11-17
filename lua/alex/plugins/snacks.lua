@@ -5,6 +5,8 @@ vim.pack.add({
 require("snacks").setup({
 	dashboard = { enabled = false },
 	image = { enabled = true },
+	-- signes et marques à gauche des numéros, plis et git à droite
+	statuscolumn = { enabled = true, folds = { open = true } },
 })
 
 -- snacks.image doesn't re-render a standalone image buffer when you leave

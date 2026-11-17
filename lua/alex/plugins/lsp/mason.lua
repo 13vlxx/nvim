@@ -6,6 +6,7 @@ vim.pack.add({
 -- Au démarrage : ajoute le bin/ de mason au PATH avant que les serveurs LSP se lancent
 require("mason").setup({
 	ui = {
+		border = "rounded",
 		icons = {
 			package_installed = "✓",
 			package_pending = "➜",

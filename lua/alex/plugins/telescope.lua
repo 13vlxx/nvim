@@ -12,6 +12,8 @@ local builtin = require("telescope.builtin")
 
 telescope.setup({
 	defaults = {
+		prompt_prefix = " \u{f002}  ",
+		selection_caret = "\u{f0da} ",
 		path_display = function(_, path)
 			local parts = vim.split(path, "/", { plain = true })
 			if #parts <= 3 then

@@ -13,6 +13,23 @@ local tree_folder = {
 	icon = "󰉋",
 }
 
+-- formateur conform qui tournera à la sauvegarde. Mis en cache par buffer : le calcul
+-- (~0,6 ms, cherche les configs biome/oxfmt) se referait à chaque rafraîchissement
+local function formatter()
+	if vim.b.formatter == nil then
+		local names = vim.tbl_map(function(f)
+			return f.name
+		end, require("conform").list_formatters_to_run(0))
+		vim.b.formatter = table.concat(names, " ")
+	end
+	return vim.b.formatter
+end
+vim.api.nvim_create_autocmd({ "BufEnter", "FileType", "BufWritePost" }, {
+	callback = function(args)
+		vim.b[args.buf].formatter = nil
+	end,
+})
+
 -- theme = "auto" : lualine suit le colorscheme actif
 lualine.setup({
 	options = {
@@ -51,8 +68,39 @@ lualine.setup({
 	},
 	sections = {
 		lualine_x = {
-			{ "encoding" },
-			{ "fileformat", symbols = { unix = "" } },
+			-- noice masque « recording @q » : sans ça, rien n'indique qu'une macro s'enregistre
+			{
+				function()
+					return require("noice").api.status.mode.get()
+				end,
+				cond = function()
+					return package.loaded.noice ~= nil and require("noice").api.status.mode.has()
+				end,
+				color = "WarningMsg",
+			},
+			-- serveurs LSP attachés, avec un spinner pendant l'indexation
+			{ "lsp_status", ignore_lsp = { "copilot" } },
+			-- conform est chargé à la première ouverture de fichier
+			{
+				formatter,
+				icon = "\u{f0262}",
+				cond = function()
+					return package.loaded.conform ~= nil
+				end,
+			},
+			-- encodage et fins de ligne seulement quand ils sortent de l'ordinaire (latin1, CRLF…)
+			{
+				"encoding",
+				cond = function()
+					return vim.bo.fileencoding ~= "" and vim.bo.fileencoding ~= "utf-8"
+				end,
+			},
+			{
+				"fileformat",
+				cond = function()
+					return vim.bo.fileformat ~= "unix"
+				end,
+			},
 			{ "filetype" },
 		},
 	},
